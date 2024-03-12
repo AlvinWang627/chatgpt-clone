@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "nuxt build",
-    "dev": "nuxt dev",
+    "dev": "nuxt dev --port 3000",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
@@ -21,7 +21,10 @@
     "vue-router": "^4.3.0"
   },
   "devDependencies": {
+    "@nuxtbase/auth-ui-vue": "^0.3.6",
+    "@nuxtjs/supabase": "^1.1.7",
     "@nuxtjs/tailwindcss": "^6.11.4",
+    "@supabase/auth-ui-shared": "^0.1.8",
     "shadcn-nuxt": "^0.10.0",
     "typescript": "^5.4.2"
   }
