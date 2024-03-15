@@ -26,4 +26,7 @@ export default defineNuxtConfig({
       cookieRedirect: false,
     },
   },
+  runtimeConfig: {
+    openaiApiKey: "",
+  },
 });
