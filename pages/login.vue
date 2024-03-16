@@ -7,7 +7,6 @@
         theme: ThemeSupa,
       }"
       :providers="['google', 'github']"
-      :redirectTo="'http://tw.yahoo.com/'"
     />
   </div>
 </template>
