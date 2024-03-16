@@ -27,6 +27,7 @@
     "@nuxtjs/supabase": "^1.1.7",
     "@nuxtjs/tailwindcss": "^6.11.4",
     "@supabase/auth-ui-shared": "^0.1.8",
+    "nuxt-icon": "^0.6.9",
     "shadcn-nuxt": "^0.10.0",
     "typescript": "^5.4.2"
   }

@@ -4,7 +4,12 @@ export default defineNuxtConfig({
     port: 3000,
   },
   devtools: { enabled: true },
-  modules: ["@nuxtjs/tailwindcss", "shadcn-nuxt", "@nuxtjs/supabase"],
+  modules: [
+    "@nuxtjs/tailwindcss",
+    "shadcn-nuxt",
+    "@nuxtjs/supabase",
+    "nuxt-icon",
+  ],
   shadcn: {
     /**
      * Prefix for all the imported component
