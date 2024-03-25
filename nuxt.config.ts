@@ -6,6 +6,7 @@ export default defineNuxtConfig({
     "shadcn-nuxt",
     "@nuxtjs/supabase",
     "nuxt-icon",
+    "@nuxtjs/color-mode",
   ],
   shadcn: {
     /**
@@ -17,6 +18,9 @@ export default defineNuxtConfig({
      * @default "./components/ui"
      */
     componentDir: "./components/ui",
+  },
+  colorMode: {
+    classSuffix: "",
   },
   supabase: {
     // Options
