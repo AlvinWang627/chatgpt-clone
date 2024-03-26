@@ -28,28 +28,24 @@ import { serverSupabaseClient, serverSupabaseUser } from "#supabase/server";
 export default defineEventHandler(async (event) => {
   const client = await serverSupabaseClient(event);
   const user = await serverSupabaseUser(event);
-  console.log("user", user);
   const body = await readBody(event);
-  const chat_id = "1b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d";
+  const chat_id = body.chat_id;
   const config = useRuntimeConfig(event);
   const openai = new OpenAI({
     apiKey: config.openaiApiKey,
   });
   //get message
   const { data } = await client
-    .from("ai-chat")
+    .from("ai_chat")
     .select("*")
     .eq("chat_id", chat_id);
-
   //確認初始messages，第一次or 2次以上
   let messages = [];
   if (data.length !== 0) {
-    messages = data[0].content;
+    messages = body.messages;
   } else {
     messages = [{ role: "system", content: "You are a helpful assistant." }];
   }
-  //user input prompt
-  messages.push({ role: "user", content: `${body.messages}` });
   async function promptToGPT() {
     const completion = await openai.chat.completions.create({
       messages,
@@ -60,14 +56,14 @@ export default defineEventHandler(async (event) => {
     if (data.length !== 0) {
       // update database
       await client
-        .from("ai-chat")
+        .from("ai_chat")
         .update({
           content: messages,
         })
         .eq("chat_id", chat_id);
     } else {
       //insert database
-      await client.from("ai-chat").insert({
+      await client.from("ai_chat").insert({
         chat_id,
         content: messages,
       });
