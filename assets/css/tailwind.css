@@ -37,6 +37,8 @@
     --radius: 0.5rem;
 
 
+    --button: 0 0% 80%;
+    --button-foreground: 0 0% 93%;
   }
  
   .dark {
@@ -69,6 +71,9 @@
     --destructive-foreground: 210 40% 98%;
  
     --ring: 212.7 26.8% 83.9%;
+
+    --button: 0 0% 18%;
+    --button-foreground: 0 0% 13%;
   }
 }
  

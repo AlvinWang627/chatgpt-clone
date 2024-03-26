@@ -3,7 +3,7 @@
     <button
       @click="$router.push('/')"
       to="/"
-      class="mb-5 p-2 flex items-center justify-between absolute top-4 z-10 w-[200px] rounded-lg bg-background hover:bg-accent cursor-pointer active:scale-[0.98]"
+      class="mb-5 p-2 flex items-center justify-between absolute top-4 z-10 w-[213px] rounded-lg bg-background hover:bg-button-foreground cursor-pointer active:scale-[0.98]"
     >
       <div class="flex items-center">
         <Icon
@@ -20,7 +20,7 @@
       <ul class="mt-[80px]">
         <li v-for="item in chatRoomList" :key="item.id">
           <NuxtLink
-            class="block p-2 w-[200px] hover:bg-accent rounded-lg text-start"
+            class="block p-2 w-[200px] hover:bg-button-foreground rounded-lg text-start"
             :to="`/c/${item.chat_id}`"
             >{{ item.chat_name }}</NuxtLink
           >
@@ -92,12 +92,12 @@ const getChatRoomList = async () => {
 };
 getChatRoomList();
 const user = useSupabaseUser();
-const userName = user!.value!["identities"]![0]!["identity_data"]!["user_name"];
+const userName = user!.value!["identities"]![0]!["identity_data"]!["name"];
 const avatarUrl =
   user!.value!["identities"]![0]!["identity_data"]!["avatar_url"];
 </script>
 <style lang="scss" scoped>
 .router-link-active {
-  @apply bg-background-secondary;
+  @apply bg-button;
 }
 </style>
