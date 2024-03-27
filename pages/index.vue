@@ -1,30 +1,28 @@
 <template>
   <Loading v-if="loading" />
   <div class="flex items-center justify-center flex-col w-full relative">
-    <div class="flex items-center justify-center flex-col h-[80%]">
-      <img src="assets/logo.jpg" alt="logo" class="w-[48px] rounded-3xl mb-3" />
+    <div class="flex items-center justify-center flex-col chat-area">
+      <Icon name="charm:robot" :size="'48px'" />
       <h1>How can I help you today?</h1>
     </div>
     <!-- absolute bottom-4 flex right-1/2 translate-x-1/2 -->
-    <div class="w-full pb-6 flex items-center justify-center">
-      <form action="" @submit="test" class="relative">
-        <Textarea
-          v-model.trim="promptInput"
-          type="text"
-          rows="10"
-          placeholder="inptut the prompt"
-          :class="'min-h-14 resize-none max-h-[300px] w-[696px] p-3 pl-4 pr-12'"
-        ></Textarea>
-        <Button
-          type="submit"
-          @click.prevent="submitHandler"
-          variant="secondary"
-          class="absolute w-[30px] h-[30px] top-1/2 -translate-y-1/2 right-4"
-        >
-          S
-        </Button>
-      </form>
-    </div>
+    <form @submit="submitHandler" class="relative mx-auto mb-3">
+      <Textarea
+        v-model.trim="promptInput"
+        type="text"
+        rows="10"
+        placeholder="inptut the prompt"
+        :class="'h-[52px] resize-none max-h-[300px] w-[696px] p-3 pl-4 pr-12'"
+      ></Textarea>
+      <Button
+        type="submit"
+        @click.prevent="submitHandler"
+        variant="secondary"
+        class="absolute w-[30px] h-[30px] top-1/2 -translate-y-1/2 right-4 p-0"
+      >
+        <Icon name="uil:arrow-up" :size="'25px'" />
+      </Button>
+    </form>
   </div>
 </template>
 
@@ -75,4 +73,8 @@ const submitHandler = async () => {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.chat-area {
+  height: calc(100dvh - 92px);
+}
+</style>

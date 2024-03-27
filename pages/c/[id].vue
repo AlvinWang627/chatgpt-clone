@@ -1,50 +1,77 @@
 <template>
   <Loading v-if="loading" />
-  <div class="w-screen h-screen relative bg-background-secondary">
-    <div>
-      <div v-for="(item, index) in promptDesc" :key="index">
-        <div v-if="item.role === 'user'">
-          <div class="avatar">
-            <img :src="avatar" alt="" class="w-[25px]" />
-            <div class="name" v-if="item.role === 'user'">You</div>
+  <div class="flex flex-col w-full h-full">
+    <ScrollArea class="chat-area pt-6">
+      <div class="pb-9">
+        <div v-for="(item, index) in promptDesc" :key="index">
+          <div
+            v-if="item.role === 'user'"
+            class="px-4 py-2 flex gap-3 max-w-[768px] mx-auto"
+          >
+            <div class="avatar shrink-0">
+              <img :src="avatar" alt="" class="w-[25px]" />
+            </div>
+            <div class="flex flex-col">
+              <div class="name">You</div>
+              <div class="content">{{ item.content }}</div>
+            </div>
           </div>
-          <div class="name" v-if="item.role === 'assistant'">Bot</div>
-          <div class="content">{{ item.content }}</div>
-        </div>
-        <div v-if="item.role === 'assistant'">
-          <div class="avatar">
-            <Icon name="material-symbols:robot-outline" :size="'25px'" />
-            <div class="name">Bot</div>
+          <div
+            v-if="item.role === 'assistant'"
+            class="px-4 py-2 flex gap-3 max-w-[768px] mx-auto"
+          >
+            <div class="avatar shrink-0">
+              <Icon name="charm:robot" :size="'25px'" />
+            </div>
+            <div class="flex flex-col">
+              <div class="name">Bot</div>
+              <div
+                class="content prose dark:prose-invert"
+                v-html="md.render(item.content)"
+              ></div>
+            </div>
           </div>
-          <div class="content">{{ item.content }}</div>
         </div>
       </div>
-    </div>
-    <form
-      action=""
-      class="absolute bottom-4 flex right-1/2 translate-x-1/2"
-      @submit="test"
-    >
+    </ScrollArea>
+    <form @submit="submitHandler" class="relative mx-auto mb-3">
       <Textarea
         v-model.trim="promptInput"
         type="text"
         rows="10"
         placeholder="inptut the prompt"
-        :class="'w-[300px] min-h-14 mr-3 resize-none max-h-[300px] '"
+        :class="'h-[52px] resize-none max-h-[300px] w-[696px] p-3 pl-4 pr-12'"
       ></Textarea>
-      <button
+      <Button
         type="submit"
         @click.prevent="submitHandler"
-        class="bg-slate-600 h-[30px] cursor-pointer"
+        variant="secondary"
+        class="absolute w-[30px] h-[30px] top-1/2 -translate-y-1/2 right-4 p-0"
       >
-        submit
-      </button>
+        <Icon name="uil:arrow-up" :size="'25px'" />
+      </Button>
     </form>
   </div>
 </template>
 
 <script setup>
-// import Loading from "~/assets/Loading.vue";
+import markdownit from "markdown-it";
+import hljs from "highlight.js";
+const md = markdownit({
+  highlight: function (str, lang) {
+    if (lang && hljs.getLanguage(lang)) {
+      //TODO
+      console.log("apple", lang);
+      try {
+        return hljs.highlight(str, { language: lang }).value;
+      } catch (__) {}
+    }
+
+    return ""; // use external default escaping
+  },
+});
+// const md = markdownit()
+const result = md.render("# markdown-it rulezz!");
 definePageMeta({
   layout: "default",
 });
@@ -67,6 +94,7 @@ const getPromptHistory = async () => {
 };
 getPromptHistory();
 const submitHandler = async () => {
+  if (promptInput.value.length === 0) return;
   loading.value = true;
   promptDesc.value.push({ role: "user", content: promptInput.value });
   try {
@@ -83,4 +111,8 @@ const submitHandler = async () => {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.chat-area {
+  height: calc(100dvh - 92px);
+}
+</style>

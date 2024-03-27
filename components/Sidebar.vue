@@ -6,12 +6,7 @@
       class="mb-5 p-2 flex items-center justify-between absolute top-4 z-10 w-[213px] rounded-lg bg-background hover:bg-button-foreground cursor-pointer active:scale-[0.98]"
     >
       <div class="flex items-center">
-        <Icon
-          icon="material-symbols:robot-outline"
-          width="28px"
-          height="28px"
-          class="mr-2"
-        />
+        <Icon icon="charm:robot" width="28px" height="28px" class="mr-2" />
         New chat
       </div>
       <Icon icon="jam:write" width="18px" height="18px" />
@@ -20,7 +15,7 @@
       <ul class="mt-[80px]">
         <li v-for="item in chatRoomList" :key="item.id">
           <NuxtLink
-            class="block p-2 w-[200px] hover:bg-button-foreground rounded-lg text-start"
+            class="block p-2 w-[213px] hover:bg-button-foreground rounded-lg text-start"
             :to="`/c/${item.chat_id}`"
             >{{ item.chat_name }}</NuxtLink
           >
@@ -29,7 +24,7 @@
     </ScrollArea>
     <DropdownMenu>
       <DropdownMenuTrigger as-child>
-        <Button variant="outline">
+        <Button variant="outline" class="w-[213px]">
           <Icon
             icon="radix-icons:moon"
             class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
@@ -74,25 +69,32 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-const colorMode = useColorMode();
-interface dataType {
+interface DataType {
   chat_id: string;
   chat_name: string;
   content: string[];
-  created_at: string;
+  created_at: Date;
   id: number;
   user_uid: string;
 }
-const chatRoomList = ref<dataType[]>();
+
+const colorMode = useColorMode();
+const chatRoomList = ref<DataType[]>();
 const getChatRoomList = async () => {
-  const res: dataType[] = await $fetch("/api/chatRoomList", {
-    method: "get",
-  });
-  chatRoomList.value = res;
+  try {
+    const res: DataType[] = await $fetch<DataType[]>("/api/chatRoomList", {
+      method: "get",
+    });
+    chatRoomList.value = res;
+  } catch (error) {
+    console.log(error);
+  }
 };
 getChatRoomList();
 const user = useSupabaseUser();
-const userName = user!.value!["identities"]![0]!["identity_data"]!["name"];
+const userName =
+  user!.value!["identities"]![0]!["identity_data"]!["name"] ??
+  user!.value!["identities"]![0]!["identity_data"]!["user_name"];
 const avatarUrl =
   user!.value!["identities"]![0]!["identity_data"]!["avatar_url"];
 </script>

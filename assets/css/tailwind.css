@@ -1,7 +1,8 @@
+@import "highlight.js/styles/github-dark.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -84,4 +85,16 @@
   body {
     @apply bg-background text-foreground;
   }
+  p {
+    @apply mb-5;
+  }
+  /* pre {
+    @apply bg-black p-3 rounded-md;
+  }
+  pre code {
+    @apply bg-transparent;
+  }
+  code {
+    @apply bg-zinc-400;
+  } */
 }
