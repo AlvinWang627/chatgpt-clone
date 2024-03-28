@@ -11,49 +11,82 @@
       </div>
       <Icon icon="jam:write" width="18px" height="18px" />
     </button>
-    <ScrollArea class="h-[calc(100vh - 208.8px)]">
-      <ul class="mt-[80px]">
-        <li v-for="item in chatRoomList" :key="item.id">
-          <NuxtLink
-            class="block p-2 w-[213px] hover:bg-button-foreground rounded-lg text-start"
-            :to="`/c/${item.chat_id}`"
-            >{{ item.chat_name }}</NuxtLink
-          >
-        </li>
-      </ul>
-    </ScrollArea>
-    <DropdownMenu>
-      <DropdownMenuTrigger as-child>
-        <Button variant="outline" class="w-[213px]">
-          <Icon
-            icon="radix-icons:moon"
-            class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
-          />
-          <Icon
-            icon="radix-icons:sun"
-            class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
-          />
-          <span class="sr-only">Toggle theme</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem @click="colorMode.preference = 'light'">
-          Light
-        </DropdownMenuItem>
-        <DropdownMenuItem @click="colorMode.preference = 'dark'">
-          Dark
-        </DropdownMenuItem>
-        <DropdownMenuItem @click="colorMode.preference = 'system'">
-          System
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-    <div class="flex items-center justify-start p-2 w-full h-12">
-      <Avatar class="mr-[0.5rem] w-8 h-8">
-        <AvatarImage :src="avatarUrl" alt="@radix-vue" />
-        <AvatarFallback>CN</AvatarFallback>
-      </Avatar>
-      <div>{{ userName }}</div>
+    <div class="flex flex-col content-between">
+      <ScrollArea class="pb-3 scroll-area">
+        <ul class="mt-[80px]">
+          <li v-for="item in chatRoomList" :key="item.id">
+            <NuxtLink
+              class="block p-2 w-[213px] hover:bg-button-foreground rounded-lg text-start"
+              :to="`/c/${item.chat_id}`"
+              >{{ item.chat_name }}</NuxtLink
+            >
+          </li>
+        </ul>
+      </ScrollArea>
+      <div class="flex flex-col">
+        <DropdownMenu>
+          <DropdownMenuTrigger as-child>
+            <Button variant="ghost" class="w-[213px]">
+              <Icon
+                icon="radix-icons:moon"
+                class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
+              />
+              <Icon
+                icon="radix-icons:sun"
+                class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
+              />
+              <span class="sr-only">Toggle theme</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem
+              @click="colorMode.preference = 'light'"
+              class="cursor-pointer"
+            >
+              Light
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              @click="colorMode.preference = 'dark'"
+              class="cursor-pointer"
+            >
+              Dark
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              @click="colorMode.preference = 'system'"
+              class="cursor-pointer"
+            >
+              System
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <DropdownMenu>
+          <DropdownMenuTrigger as-child>
+            <Button
+              variant="ghost"
+              class="w-[213px] flex items-center justify-start h-12 p-2"
+            >
+              <Avatar class="mr-[0.5rem] w-8 h-8">
+                <AvatarImage :src="avatarUrl" alt="@radix-vue" />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+              <div>
+                {{ userName }}
+              </div>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent :align="'start'" class="w-[213px]">
+            <DropdownMenuItem class="cursor-pointer h-10" @click="handleLogout">
+              <Icon
+                icon="ic:round-logout"
+                width="20px"
+                height="20px"
+                class="mr-2"
+              />
+              Log out</DropdownMenuItem
+            >
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </div>
   </div>
 </template>
@@ -96,10 +129,27 @@ const userName =
   user!.value!["identities"]![0]!["identity_data"]!["name"] ??
   user!.value!["identities"]![0]!["identity_data"]!["user_name"];
 const avatarUrl =
-  user!.value!["identities"]![0]!["identity_data"]!["avatar_url"];
+  user!.value!["identities"]![1]!["identity_data"]!["avatar_url"];
+const supabase = useSupabaseClient();
+const router = useRouter();
+const handleLogout = async () => {
+  try {
+    const { error } = await supabase.auth.signOut();
+    if (!error) {
+      router.push("/login");
+    }
+    console.log(error);
+  } catch (error) {
+    console.log(error);
+  }
+};
 </script>
+
 <style lang="scss" scoped>
 .router-link-active {
   @apply bg-button;
+}
+.scroll-area {
+  height: calc(100vh - 12px - 40px - 48px);
 }
 </style>
