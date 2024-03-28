@@ -7,5 +7,5 @@ export default defineEventHandler(async (event) => {
     .select("*")
     .eq("chat_id", chat_id)
     .select();
-  return { data: data[0].content };
+  return { data: data[0]?.content };
 });

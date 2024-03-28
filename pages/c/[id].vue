@@ -6,19 +6,23 @@
         <div v-for="(item, index) in promptDesc" :key="index">
           <div
             v-if="item.role === 'user'"
-            class="px-4 py-2 flex gap-3 max-w-[768px] mx-auto"
+            class="px-4 py-2 flex gap-3 max-w-[672px] mx-auto"
           >
-            <div class="avatar shrink-0">
+            <!-- <div class="avatar shrink-0">
               <img :src="avatar" alt="" class="w-[25px]" />
-            </div>
+            </div> -->
+            <Avatar class="avatar shrink-0 w-[25px] h-[25px]">
+              <AvatarImage :src="avatar" alt="@radix-vue" />
+              <AvatarFallback>avatar</AvatarFallback>
+            </Avatar>
             <div class="flex flex-col">
               <div class="name">You</div>
-              <div class="content">{{ item.content }}</div>
+              <div class="content" v-html="md.render(item.content)"></div>
             </div>
           </div>
           <div
             v-if="item.role === 'assistant'"
-            class="px-4 py-2 flex gap-3 max-w-[768px] mx-auto"
+            class="px-4 py-2 flex gap-3 max-w-[672px] mx-auto"
           >
             <div class="avatar shrink-0">
               <Icon name="charm:robot" :size="'25px'" />

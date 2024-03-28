@@ -33,11 +33,8 @@ definePageMeta({
   layout: "default",
 });
 const loading = ref(false);
-const userData = useSupabaseUser();
-const avatar = userData.value["identities"][0]["identity_data"]["avatar_url"];
 const promptInput = ref("");
 const title = ref("");
-const userId = useSupabaseUser().value.id;
 const promptDesc = ref([
   { role: "system", content: "You are a helpful assistant." },
 ]);
