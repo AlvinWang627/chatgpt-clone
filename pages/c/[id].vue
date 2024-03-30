@@ -17,7 +17,10 @@
             </Avatar>
             <div class="flex flex-col">
               <div class="name">You</div>
-              <div class="content" v-html="md.render(item.content)"></div>
+              <div
+                class="content prose dark:prose-invert"
+                v-html="md.render(item.content)"
+              ></div>
             </div>
           </div>
           <div

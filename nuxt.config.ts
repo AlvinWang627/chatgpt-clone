@@ -2,9 +2,9 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: [
+    "@nuxtjs/supabase",
     "@nuxtjs/tailwindcss",
     "shadcn-nuxt",
-    "@nuxtjs/supabase",
     "nuxt-icon",
     "@nuxtjs/color-mode",
   ],

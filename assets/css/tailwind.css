@@ -7,7 +7,7 @@
   :root {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
-    --background-secondary: 0 0% 100%;
+    --background-secondary: 0 0% 98%;
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
@@ -40,6 +40,7 @@
 
     --button: 0 0% 80%;
     --button-foreground: 0 0% 93%;
+
   }
  
   .dark {
@@ -88,13 +89,7 @@
   p {
     @apply mb-5;
   }
-  /* pre {
-    @apply bg-black p-3 rounded-md;
+  h1 {
+    font-size: 32px;
   }
-  pre code {
-    @apply bg-transparent;
-  }
-  code {
-    @apply bg-zinc-400;
-  } */
 }
