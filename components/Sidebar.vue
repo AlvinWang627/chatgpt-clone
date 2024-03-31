@@ -125,11 +125,11 @@ const getChatRoomList = async () => {
 };
 getChatRoomList();
 const user = useSupabaseUser();
-const userName =
-user!.value!["identities"]![0]!["identity_data"]!["name"] ??
-user!.value!["identities"]![0]!["identity_data"]!["user_name"];
-const avatarUrl =
-user!.value!["identities"]![1]!["identity_data"]!["avatar_url"];
+// const userName =
+//   user!.value!["identities"]![0]!["identity_data"]!["name"] ??
+//   user!.value!["identities"]![0]!["identity_data"]!["user_name"];
+// const avatarUrl =
+//   user!.value!["identities"]![1]!["identity_data"]!["avatar_url"];
 const supabase = useSupabaseClient();
 const router = useRouter();
 const handleLogout = async () => {

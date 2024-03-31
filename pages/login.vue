@@ -11,7 +11,6 @@
       }"
       :providers="[]"
       v-model="authView"
-      :redirectTo="redirectTo"
     />
     <div class="flex items-center justify-center gap-3 py-6">
       <div class="w-full h-[1px] bg-foreground"></div>
@@ -49,27 +48,19 @@ onMounted(() => {
 // Import predefined theme
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { Auth } from "@nuxtbase/auth-ui-vue";
-import { createClient } from "@supabase/supabase-js";
-const config = useRuntimeConfig();
-const supabase = createClient(
-  config.public.supabase.url,
-  config.public.supabase.key
-);
 const supabaseClient = useSupabaseClient();
 const authView = ref("sign_in");
-const redirectTo = computed(() => {
-  return authView.value === "forgotten_password" ? "/forgot" : "/confirm";
-});
 
 // const supabase = useSupabaseClient();
-const router = useRouter();
 const user = useSupabaseUser();
+const redirectTo = `${useRuntimeConfig().public.baseUrl}/confirm`;
+
 const githubHandler = async () => {
   try {
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { error } = await supabaseClient.auth.signInWithOAuth({
       provider: "github",
       options: {
-        redirectTo: "https://alvinwang627.dev/confirm",
+        redirectTo,
       },
     });
     if (error) {
@@ -81,10 +72,10 @@ const githubHandler = async () => {
 };
 const googleHandler = async () => {
   try {
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { error } = await supabaseClient.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: "https://alvinwang627.dev/confirm",
+        redirectTo,
       },
     });
     if (error) {

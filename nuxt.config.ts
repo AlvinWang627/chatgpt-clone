@@ -27,12 +27,12 @@ export default defineNuxtConfig({
     redirectOptions: {
       login: "/login",
       callback: "/confirm",
-      include: undefined,
-      exclude: [""],
-      cookieRedirect: false,
     },
   },
   runtimeConfig: {
+    public: {
+      baseUrl: process.env.BASE_URL || "http://localhost:3000",
+    },
     openaiApiKey: "",
   },
 });
