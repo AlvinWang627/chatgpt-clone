@@ -93,15 +93,6 @@
 
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 interface DataType {
   chat_id: string;
   chat_name: string;
@@ -125,11 +116,31 @@ const getChatRoomList = async () => {
 };
 getChatRoomList();
 const user = useSupabaseUser();
-// const userName =
-//   user!.value!["identities"]![0]!["identity_data"]!["name"] ??
-//   user!.value!["identities"]![0]!["identity_data"]!["user_name"];
-// const avatarUrl =
-//   user!.value!["identities"]![1]!["identity_data"]!["avatar_url"];
+interface authType {
+  user: {
+    user_metadata: {
+      name: string;
+      avatar_url: string;
+      email?: string;
+    };
+  };
+}
+let auth: Ref<authType | undefined> = ref();
+const userName = ref<string>("");
+const avatarUrl = ref<string>("");
+onMounted(() => {
+  const storedAuth = localStorage.getItem("sb-sofxledwuwikccvjhpdg-auth-token");
+  if (storedAuth) {
+    auth.value = JSON.parse(storedAuth);
+    if (auth.value) {
+      userName.value =
+        auth.value.user.user_metadata.name ??
+        auth.value.user.user_metadata.email!.split("@")[0];
+      avatarUrl.value = auth.value.user.user_metadata.avatar_url;
+    }
+  }
+});
+
 const supabase = useSupabaseClient();
 const router = useRouter();
 const handleLogout = async () => {
