@@ -51,7 +51,6 @@ import { Auth } from "@nuxtbase/auth-ui-vue";
 const supabaseClient = useSupabaseClient();
 const authView = ref("sign_in");
 
-// const supabase = useSupabaseClient();
 const user = useSupabaseUser();
 const redirectTo = `${useRuntimeConfig().public.baseUrl}/confirm`;
 

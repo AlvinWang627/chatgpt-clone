@@ -31,6 +31,11 @@
 
 definePageMeta({
   layout: "default",
+  name: "index",
+});
+
+useHead({
+  title: "New chat",
 });
 const loading = ref(false);
 const promptInput = ref("");

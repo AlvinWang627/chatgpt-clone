@@ -115,7 +115,6 @@ const getChatRoomList = async () => {
   }
 };
 getChatRoomList();
-const user = useSupabaseUser();
 interface authType {
   user: {
     user_metadata: {

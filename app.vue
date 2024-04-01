@@ -7,5 +7,7 @@
 </template>
 
 <script setup lang="ts">
-
+useHead({
+  titleTemplate: "%s - openAI Clone",
+});
 </script>
