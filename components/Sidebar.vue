@@ -14,6 +14,7 @@
     <div class="flex flex-col content-between">
       <ScrollArea class="pb-3 scroll-area">
         <ul class="mt-[80px]">
+          <Skeleton v-if="sidebarLoading" class="h-9 w-[213px]" />
           <li v-for="item in chatRoomData" :key="item.id">
             <NuxtLink
               class="block p-2 w-[213px] hover:bg-button-foreground rounded-lg text-start"
@@ -92,21 +93,21 @@
 </template>
 
 <script setup lang="ts">
+import { Skeleton } from "@/components/ui/skeleton";
 import { useUserStore } from "@/stores/user";
 import { Icon } from "@iconify/vue";
 import { useChatRoomList } from "@/stores/chatRoomList";
-const loading = ref(true);
+
 const colorMode = useColorMode();
 
 const chatRoomList = useChatRoomList();
+const { sidebarLoading } = storeToRefs(chatRoomList);
 const { chatRoomData } = storeToRefs(chatRoomList);
-console.log(chatRoomData);
 const userStroe = useUserStore();
 const { name, avatarUrl } = storeToRefs(userStroe);
 onMounted(() => {
   userStroe.getData();
   chatRoomList.getData();
-  loading.value = false;
 });
 
 const supabase = useSupabaseClient();

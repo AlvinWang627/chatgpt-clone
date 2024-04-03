@@ -81,7 +81,8 @@
 <script setup>
 import markdownit from "markdown-it";
 import { useUserStore } from "@/stores/user";
-
+import { useChatRoomList } from "@/stores/chatRoomList";
+const chatRoomList = useChatRoomList();
 definePageMeta({
   layout: "default",
   name: "index",
@@ -114,24 +115,22 @@ const title = ref("");
 const promptDesc = ref([
   { role: "system", content: "You are a helpful assistant." },
 ]);
-// TODO
-// 送出表單，新增一個chatroom
-// v gen uuid
-// v push router /c/uuid
-//  add new chat room to chat room list and get chat room list
 const router = useRouter();
 const submitHandler = async () => {
   if (promptInput.value.length === 0) return;
   firstPrompt.value = promptInput.value;
   promptDesc.value.push({ role: "user", content: promptInput.value });
   try {
+    chatRoomList.sidebarLoading = true;
     title.value = promptInput.value.slice(0, 8);
     //新增chatroom
-    const { data } = await $fetch("/api/chatRoomList", {
-      method: "post",
-      body: { messages: promptDesc.value, chat_name: title.value },
-    });
-    const { chat_id } = data[0];
+    const { chat_id, chat_name, created_at, id } = await $fetch(
+      "/api/chatRoomList",
+      {
+        method: "post",
+        body: { messages: promptDesc.value, chat_name: title.value },
+      }
+    );
     const res = await $fetch("/api/conversation", {
       method: "post",
       body: {
@@ -139,9 +138,17 @@ const submitHandler = async () => {
         chat_id,
       },
     });
+    chatRoomList.chatRoomData.unshift({
+      chat_id,
+      chat_name,
+      created_at,
+      id,
+    });
+    chatRoomList.sidebarLoading = false;
     promptDesc.value.push(res);
-    localStorage.setItem("test", JSON.stringify(promptDesc.value));
-    localStorage.setItem("test1", JSON.stringify(true));
+
+    localStorage.setItem("firstPrompt", JSON.stringify(promptDesc.value));
+    localStorage.setItem("isFirstPrompt", JSON.stringify(true));
     router.push(`/c/${chat_id}`);
     promptInput.value = "";
   } catch (error) {

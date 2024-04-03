@@ -7,14 +7,13 @@ export default defineEventHandler(async (event) => {
     if (user && user.id) {
       const { data, error } = await client
         .from("ai_chat")
-        .select("*")
+        .select("chat_id, chat_name, id, created_at")
         .eq("user_uid", user.id)
-        .order("created_at", { ascending: false }); // Ensure case-insensitivity if needed
+        .order("created_at", { ascending: false });
       if (error) {
         console.error("Error fetching chat data:", error);
-        return { error: "Failed to retrieve chat data" }; // Informative error response
+        return { error: "Failed to retrieve chat data" };
       }
-
       return data;
     }
   } catch (err) {

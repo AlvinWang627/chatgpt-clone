@@ -105,19 +105,22 @@ const route = useRoute();
 const chat_id = route.params.id || null;
 const loading = ref<boolean>(false);
 const promptInput = ref("");
-const promptDesc = ref<string[]>([]);
+const promptDesc = ref<PromptDesc[]>([]);
 const fromNewChat = ref<boolean>(true);
-interface ConversationResponse {
-  data: string[];
+interface PromptDesc {
+  role: string;
+  content: string;
 }
-const getPromptHistory = async (isNewChat = false) => {
-  if (isNewChat) {
-    promptDesc.value = JSON.parse(localStorage.getItem("test") || "");
+//todo type
+const getPromptHistory = async (isFirstPrompt = false) => {
+  if (isFirstPrompt) {
+    promptDesc.value = JSON.parse(localStorage.getItem("firstPrompt") || "");
   } else {
     try {
-      const { data } = (await $fetch(`/api/conversation/${chat_id}`, {
+      const res = await $fetch(`/api/conversation/${chat_id}`, {
         method: "get",
-      })) as ConversationResponse;
+      });
+      const { data } = res;
       promptDesc.value = data;
     } catch (error) {
       console.log(error);
@@ -125,11 +128,10 @@ const getPromptHistory = async (isNewChat = false) => {
   }
 };
 onMounted(() => {
-  const test1 = localStorage.getItem("test1");
-  fromNewChat.value = test1 ? JSON.parse(test1) : false;
+  const isFirstPrompt = localStorage.getItem("isFirstPrompt");
+  fromNewChat.value = isFirstPrompt ? JSON.parse(isFirstPrompt) : false;
   getPromptHistory(fromNewChat.value);
-
-  localStorage.removeItem("test1");
+  localStorage.removeItem("isFirstPrompt");
 });
 const submitHandler = async () => {
   if (promptInput.value.length === 0) return;
