@@ -14,7 +14,7 @@
     <div class="flex flex-col content-between">
       <ScrollArea class="pb-3 scroll-area">
         <ul class="mt-[80px]">
-          <li v-for="item in chatRoomList" :key="item.id">
+          <li v-for="item in chatRoomData" :key="item.id">
             <NuxtLink
               class="block p-2 w-[213px] hover:bg-button-foreground rounded-lg text-start"
               :to="`/c/${item.chat_id}`"
@@ -70,7 +70,7 @@
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
               <div>
-                {{ userName }}
+                {{ name }}
               </div>
             </Button>
           </DropdownMenuTrigger>
@@ -92,52 +92,21 @@
 </template>
 
 <script setup lang="ts">
+import { useUserStore } from "@/stores/user";
 import { Icon } from "@iconify/vue";
-interface DataType {
-  chat_id: string;
-  chat_name: string;
-  content: string[];
-  created_at: Date;
-  id: number;
-  user_uid: string;
-}
-
+import { useChatRoomList } from "@/stores/chatRoomList";
+const loading = ref(true);
 const colorMode = useColorMode();
-const chatRoomList = ref<DataType[]>();
-const getChatRoomList = async () => {
-  try {
-    const res: DataType[] = await $fetch<DataType[]>("/api/chatRoomList", {
-      method: "get",
-    });
-    chatRoomList.value = res;
-  } catch (error) {
-    console.log(error);
-  }
-};
-getChatRoomList();
-interface authType {
-  user: {
-    user_metadata: {
-      name: string;
-      avatar_url: string;
-      email?: string;
-    };
-  };
-}
-let auth: Ref<authType | undefined> = ref();
-const userName = ref<string>("");
-const avatarUrl = ref<string>("");
+
+const chatRoomList = useChatRoomList();
+const { chatRoomData } = storeToRefs(chatRoomList);
+console.log(chatRoomData);
+const userStroe = useUserStore();
+const { name, avatarUrl } = storeToRefs(userStroe);
 onMounted(() => {
-  const storedAuth = localStorage.getItem("sb-sofxledwuwikccvjhpdg-auth-token");
-  if (storedAuth) {
-    auth.value = JSON.parse(storedAuth);
-    if (auth.value) {
-      userName.value =
-        auth.value.user.user_metadata.name ??
-        auth.value.user.user_metadata.email!.split("@")[0];
-      avatarUrl.value = auth.value.user.user_metadata.avatar_url;
-    }
-  }
+  userStroe.getData();
+  chatRoomList.getData();
+  loading.value = false;
 });
 
 const supabase = useSupabaseClient();
