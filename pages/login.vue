@@ -11,6 +11,7 @@
       }"
       :providers="[]"
       v-model="authView"
+      :theme="darkMode"
     />
     <div class="flex items-center justify-center gap-3 py-6">
       <div class="w-full h-[1px] bg-foreground"></div>
@@ -42,9 +43,13 @@ definePageMeta({
   layout: "home",
 });
 const componentLoaded = ref(false);
+//get dark mode
+const darkMode = ref<string>("light");
 onMounted(() => {
+  darkMode.value = localStorage.getItem("nuxt-color-mode") || "light";
   componentLoaded.value = true;
 });
+
 // Import predefined theme
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { Auth } from "@nuxtbase/auth-ui-vue";
