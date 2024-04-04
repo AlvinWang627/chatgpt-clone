@@ -8,7 +8,6 @@ export const useChatRoomList = defineStore("useChatRoomList", {
         id: 0,
       },
     ],
-    sidebarLoading: false,
   }),
   actions: {
     async getData() {
@@ -29,5 +28,4 @@ interface DataType {
     created_at: Date;
     id: number;
   }[];
-  sidebarLoading: boolean;
 }

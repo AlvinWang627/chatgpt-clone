@@ -13,8 +13,7 @@
     </button>
     <div class="flex flex-col content-between">
       <ScrollArea class="pb-3 scroll-area">
-        <ul class="mt-[80px]">
-          <Skeleton v-if="sidebarLoading" class="h-9 w-[213px]" />
+        <TransitionGroup name="list" tag="ul" class="mt-[80px]">
           <li v-for="item in chatRoomData" :key="item.id">
             <NuxtLink
               class="block p-2 w-[213px] hover:bg-button-foreground rounded-lg text-start"
@@ -22,7 +21,7 @@
               >{{ item.chat_name }}</NuxtLink
             >
           </li>
-        </ul>
+        </TransitionGroup>
       </ScrollArea>
       <div class="flex flex-col">
         <DropdownMenu>
@@ -93,7 +92,6 @@
 </template>
 
 <script setup lang="ts">
-import { Skeleton } from "@/components/ui/skeleton";
 import { useUserStore } from "@/stores/user";
 import { Icon } from "@iconify/vue";
 import { useChatRoomList } from "@/stores/chatRoomList";
@@ -101,13 +99,12 @@ import { useChatRoomList } from "@/stores/chatRoomList";
 const colorMode = useColorMode();
 
 const chatRoomList = useChatRoomList();
-const { sidebarLoading } = storeToRefs(chatRoomList);
 const { chatRoomData } = storeToRefs(chatRoomList);
 const userStroe = useUserStore();
 const { name, avatarUrl } = storeToRefs(userStroe);
+chatRoomList.getData();
 onMounted(() => {
   userStroe.getData();
-  chatRoomList.getData();
 });
 
 const supabase = useSupabaseClient();
@@ -131,5 +128,14 @@ const handleLogout = async () => {
 }
 .scroll-area {
   height: calc(100vh - 12px - 40px - 48px);
+}
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
 }
 </style>
