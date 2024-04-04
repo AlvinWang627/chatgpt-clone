@@ -57,15 +57,14 @@
         @keyup.enter.prevent="submitHandler"
         @keyup.shift.enter=""
         type="text"
-        rows="10"
         placeholder="inptut the prompt"
-        :class="'h-[52px] resize-none max-h-[300px] w-[696px] p-3 pl-4 pr-12'"
+        :class="'resize-none max-h-[450px] w-[696px] p-3 pl-4 pr-12'"
       ></Textarea>
       <Button
         type="submit"
         @click.prevent="submitHandler"
         variant="secondary"
-        class="absolute w-[30px] h-[30px] top-1/2 -translate-y-1/2 right-4 p-0"
+        class="absolute w-[30px] h-[30px] bottom-6 right-4 p-0"
       >
         <Icon name="uil:arrow-up" :size="'25px'" />
       </Button>
@@ -89,7 +88,7 @@ const md = markdownit({
   highlight: function (str, lang) {
     if (lang && hljs.getLanguage(lang)) {
       //TODO
-      console.log("apple", lang);
+      // console.log("apple", lang);
       try {
         return hljs.highlight(str, { language: lang }).value;
       } catch (__) {}
