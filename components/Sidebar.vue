@@ -36,7 +36,7 @@
                 <AlertDialogHeader>
                   <AlertDialogTitle>Delete chat?</AlertDialogTitle>
                   <AlertDialogDescription>
-                    This will delete {{ item.chat_name }}.z
+                    This will delete {{ item.chat_name }}.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
@@ -157,6 +157,7 @@ const handleDelete = async (chat_id: string) => {
     });
     if (res === "success") {
       chatRoomList.getData();
+      router.push("/");
     } else {
       console.log(res);
       alert("An error occurred");
