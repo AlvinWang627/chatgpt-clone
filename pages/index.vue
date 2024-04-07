@@ -22,6 +22,7 @@
         @click.prevent="submitHandler"
         variant="secondary"
         class="absolute w-[30px] h-[30px] bottom-6 right-4 p-0"
+        :disabled="promptInput.length === 0"
       >
         <Icon name="uil:arrow-up" :size="'25px'" />
       </Button>
