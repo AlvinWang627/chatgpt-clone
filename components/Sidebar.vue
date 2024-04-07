@@ -14,12 +14,39 @@
     <div class="flex flex-col content-between">
       <ScrollArea class="pb-3 scroll-area">
         <TransitionGroup name="list" tag="ul" class="mt-[80px]">
-          <li v-for="item in chatRoomData" :key="item.id">
+          <li v-for="item in chatRoomData" :key="item.id" class="relative">
             <NuxtLink
               class="block p-2 w-[213px] hover:bg-button-foreground rounded-lg text-start"
               :to="`/c/${item.chat_id}`"
               >{{ item.chat_name }}</NuxtLink
             >
+            <AlertDialog>
+              <AlertDialogTrigger as-child>
+                <div
+                  class="absolute right-7 top-1/2 -translate-y-1/2 cursor-pointer"
+                >
+                  <Icon
+                    icon="fluent:delete-16-filled"
+                    width="20px"
+                    height="20px"
+                  />
+                </div>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete chat?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will delete {{ item.chat_name }}.z
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction @click="handleDelete(item.chat_id)"
+                    >Delete</AlertDialogAction
+                  >
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </li>
         </TransitionGroup>
       </ScrollArea>
@@ -116,6 +143,24 @@ const handleLogout = async () => {
       router.push("/login");
     }
     console.log(error);
+  } catch (error) {
+    console.log(error);
+  }
+};
+const handleDelete = async (chat_id: string) => {
+  try {
+    const res = await $fetch("/api/chatRoomList", {
+      method: "delete",
+      body: {
+        chat_id,
+      },
+    });
+    if (res === "success") {
+      chatRoomList.getData();
+    } else {
+      console.log(res);
+      alert("An error occurred");
+    }
   } catch (error) {
     console.log(error);
   }
