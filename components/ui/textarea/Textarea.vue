@@ -18,7 +18,7 @@ const modelValue = useVModel(props, "modelValue", emits, {
   defaultValue: props.defaultValue,
 });
 const textarea = ref<HTMLTextAreaElement | null>(null);
-let textareaHeight = ref<string | number | undefined>("52");
+let textareaHeight = ref<string | number | undefined>("52px");
 const handleHeight = () => {
   const textLength = textarea.value?.textLength;
   if (textLength === 0) {

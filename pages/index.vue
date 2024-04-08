@@ -7,7 +7,10 @@
       <Icon name="charm:robot" :size="'48px'" class="mb-2" />
       <h1>How can I help you today?</h1>
     </div>
-    <form @submit="submitHandler" class="relative mx-auto mb-8">
+    <form
+      @submit="submitHandler"
+      class="relative mx-auto mb-8 w-full max-w-[766px]"
+    >
       <Textarea
         ref="textarea"
         v-model.trim="promptInput"
@@ -15,7 +18,7 @@
         @keyup.shift.enter=""
         type="text"
         placeholder="inptut the prompt"
-        :class="'resize-none max-h-[450px] w-[696px] p-3 pl-4 pr-12'"
+        :class="'resize-none max-h-[450px] max-w-[766px] p-3 pl-4 pr-12'"
       ></Textarea>
       <Button
         type="submit"
