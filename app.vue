@@ -8,6 +8,7 @@
 
 <script setup lang="ts">
 useHead({
-  titleTemplate: "%s - openAI Clone",
+  title: "Login",
+  titleTemplate: "%s - ChatGPT Clone",
 });
 </script>
