@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 import { defineEventHandler } from "h3";
-import { serverSupabaseClient, serverSupabaseUser } from "#supabase/server";
+import { serverSupabaseClient } from "#supabase/server";
 
 /**
  * backend
@@ -27,25 +27,17 @@ import { serverSupabaseClient, serverSupabaseUser } from "#supabase/server";
 
 export default defineEventHandler(async (event) => {
   const client = await serverSupabaseClient(event);
-  const user = await serverSupabaseUser(event);
   const body = await readBody(event);
-  const chat_id = body.chat_id;
+  const { chat_id, messages } = body;
   const config = useRuntimeConfig(event);
   const openai = new OpenAI({
     apiKey: config.openaiApiKey,
   });
-  //get message
+  //get message by chat_id
   const { data } = await client
     .from("ai_chat")
     .select("*")
     .eq("chat_id", chat_id);
-  //確認初始messages，第一次or 2次以上
-  let messages = [];
-  if (data.length !== 0) {
-    messages = body.messages;
-  } else {
-    messages = [{ role: "system", content: "You are a helpful assistant." }];
-  }
   async function promptToGPT() {
     const completion = await openai.chat.completions.create({
       messages,

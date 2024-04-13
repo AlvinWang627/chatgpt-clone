@@ -1,7 +1,7 @@
 <template>
   <div
     class="flex items-center justify-center flex-col w-full relative"
-    v-if="!firstPrompt.length"
+    v-if="promptDesc.length === 1"
   >
     <div class="flex items-center justify-center flex-col chat-area">
       <Icon name="charm:robot" :size="'48px'" class="mb-2" />
@@ -97,7 +97,6 @@ useHead({
 const userStore = useUserStore();
 const { avatarUrl } = storeToRefs(userStore);
 
-const firstPrompt = ref("");
 const promptInput = ref("");
 const title = ref("");
 const promptDesc = ref([
@@ -106,11 +105,10 @@ const promptDesc = ref([
 const router = useRouter();
 const submitHandler = async () => {
   if (promptInput.value.length === 0) return;
-  firstPrompt.value = promptInput.value;
   promptDesc.value.push({ role: "user", content: promptInput.value });
+  await handleTitleFetch();
   try {
-    title.value = promptInput.value.slice(0, 8);
-    //新增chatroom
+    //insert chatroom get chat_id
     const { chat_id, chat_name, created_at, id } = await $fetch(
       "/api/chatRoomList",
       {
@@ -142,6 +140,17 @@ const submitHandler = async () => {
     console.log(error);
   }
 };
+async function handleTitleFetch() {
+  try {
+    const _title = await $fetch("/api/title", {
+      method: "post",
+      body: { messages: promptDesc.value },
+    });
+    title.value = _title.content;
+  } catch (error) {
+    console.log(error);
+  }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -18,8 +18,13 @@
             <NuxtLink
               class="block p-2 w-[213px] hover:bg-button-foreground rounded-lg text-start"
               :to="`/c/${item.chat_id}`"
-              >{{ item.chat_name }}</NuxtLink
             >
+              <span
+                class="block w-[167px] overflow-hidden text-nowrap text-ellipsis"
+              >
+                {{ item.chat_name }}
+              </span>
+            </NuxtLink>
             <AlertDialog>
               <AlertDialogTrigger as-child>
                 <div
