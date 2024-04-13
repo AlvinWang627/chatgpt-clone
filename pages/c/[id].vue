@@ -15,7 +15,7 @@
               <div class="name">You</div>
               <div
                 class="content prose dark:prose-invert"
-                v-html="md.render(item.content)"
+                v-html="$md.render(item.content)"
               ></div>
             </div>
           </div>
@@ -30,7 +30,7 @@
               <div class="name">Bot</div>
               <div
                 class="content prose dark:prose-invert"
-                v-html="md.render(item.content)"
+                v-html="$md.render(item.content)"
               ></div>
             </div>
           </div>
@@ -77,29 +77,13 @@
 </template>
 
 <script setup lang="ts">
-import markdownit from "markdown-it";
-import hljs from "highlight.js";
+const { $md } = useNuxtApp();
 import { useUserStore } from "@/stores/user";
-
 definePageMeta({
   layout: "default",
 });
 useHead({
   title: "Chat room",
-});
-
-const md = markdownit({
-  highlight: function (str, lang) {
-    if (lang && hljs.getLanguage(lang)) {
-      //TODO
-      // console.log("apple", lang);
-      try {
-        return hljs.highlight(str, { language: lang }).value;
-      } catch (__) {}
-    }
-
-    return ""; // use external default escaping
-  },
 });
 
 const userStore = useUserStore();

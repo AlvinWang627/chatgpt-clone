@@ -45,7 +45,7 @@
           <div class="name">You</div>
           <div
             class="content prose dark:prose-invert"
-            v-html="md.render(item.content)"
+            v-html="$md.render(item.content)"
           ></div>
         </div>
       </div>
@@ -60,7 +60,7 @@
           <div class="name">Bot</div>
           <div
             class="content prose dark:prose-invert"
-            v-html="md.render(item.content)"
+            v-html="$md.render(item.content)"
           ></div>
         </div>
       </div>
@@ -83,7 +83,7 @@
 </template>
 
 <script setup>
-import markdownit from "markdown-it";
+const { $md } = useNuxtApp();
 import { useUserStore } from "@/stores/user";
 import { useChatRoomList } from "@/stores/chatRoomList";
 const chatRoomList = useChatRoomList();
@@ -98,20 +98,6 @@ const userStore = useUserStore();
 const { avatarUrl } = storeToRefs(userStore);
 
 const firstPrompt = ref("");
-const md = markdownit({
-  highlight: function (str, lang) {
-    if (lang && hljs.getLanguage(lang)) {
-      //TODO
-      //code block code的名字
-      // console.log("apple", lang);
-      try {
-        return hljs.highlight(str, { language: lang }).value;
-      } catch (__) {}
-    }
-
-    return "";
-  },
-});
 const promptInput = ref("");
 const title = ref("");
 const promptDesc = ref([
@@ -132,6 +118,7 @@ const submitHandler = async () => {
         body: { messages: promptDesc.value, chat_name: title.value },
       }
     );
+    //chat to ai
     const res = await $fetch("/api/conversation", {
       method: "post",
       body: {
