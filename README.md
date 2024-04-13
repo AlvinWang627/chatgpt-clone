@@ -2,7 +2,7 @@
 
 
 ## Live Demo
-https://alvinwang627@gmail.com
+https://alvinwang627.dev/
 
 ## 目前整合
 本專案主要以Nuxt3為主體所建立的全端專案
