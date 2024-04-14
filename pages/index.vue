@@ -8,14 +8,13 @@
       <h1>How can I help you today?</h1>
     </div>
     <form
-      @submit="submitHandler"
+      @keydown.shift.enter=""
+      @keyup.enter.exact="submitHandler"
       class="relative mx-auto mb-8 w-full max-w-[766px]"
     >
       <Textarea
         ref="textarea"
         v-model.trim="promptInput"
-        @keyup.enter.prevent="submitHandler"
-        @keyup.shift.enter=""
         type="text"
         placeholder="inptut the prompt"
         :class="'resize-none max-h-[450px] max-w-[766px] p-3 pl-4 pr-12'"
@@ -83,10 +82,6 @@
 </template>
 
 <script setup>
-const { $md } = useNuxtApp();
-import { useUserStore } from "@/stores/user";
-import { useChatRoomList } from "@/stores/chatRoomList";
-const chatRoomList = useChatRoomList();
 definePageMeta({
   layout: "default",
   name: "index",
@@ -94,6 +89,11 @@ definePageMeta({
 useHead({
   title: "New chat",
 });
+import { useUserStore } from "@/stores/user";
+import { useChatRoomList } from "@/stores/chatRoomList";
+const { $md } = useNuxtApp();
+const chatRoomList = useChatRoomList();
+
 const userStore = useUserStore();
 const { avatarUrl } = storeToRefs(userStore);
 

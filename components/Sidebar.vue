@@ -56,68 +56,109 @@
         </TransitionGroup>
       </ScrollArea>
       <div class="flex flex-col">
-        <DropdownMenu>
-          <DropdownMenuTrigger as-child>
-            <Button variant="ghost" class="w-[213px]">
-              <Icon
-                icon="radix-icons:moon"
-                class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
-              />
-              <Icon
-                icon="radix-icons:sun"
-                class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
-              />
-              <span class="sr-only">Toggle theme</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem
-              @click="colorMode.preference = 'light'"
-              class="cursor-pointer"
-            >
-              Light
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              @click="colorMode.preference = 'dark'"
-              class="cursor-pointer"
-            >
-              Dark
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              @click="colorMode.preference = 'system'"
-              class="cursor-pointer"
-            >
-              System
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <DropdownMenu>
-          <DropdownMenuTrigger as-child>
-            <Button
-              variant="ghost"
-              class="w-[213px] flex items-center justify-start h-12 p-2"
-            >
-              <Avatar class="mr-[0.5rem] w-8 h-8">
-                <AvatarImage :src="avatarUrl" alt="@radix-vue" />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
-              <div>
-                {{ name }}
-              </div>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent :align="'start'" class="w-[213px]">
-            <DropdownMenuItem class="cursor-pointer h-10" @click="handleLogout">
-              <Icon
-                icon="ic:round-logout"
-                width="20px"
-                height="20px"
-                class="mr-2"
-              />
-              Log out</DropdownMenuItem
-            >
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <AlertDialog>
+          <DropdownMenu>
+            <DropdownMenuTrigger as-child>
+              <Button variant="ghost" class="w-[213px]">
+                <Icon
+                  icon="radix-icons:moon"
+                  class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
+                />
+                <Icon
+                  icon="radix-icons:sun"
+                  class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
+                />
+                <span class="sr-only">Toggle theme</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                @click="colorMode.preference = 'light'"
+                class="cursor-pointer"
+              >
+                Light
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                @click="colorMode.preference = 'dark'"
+                class="cursor-pointer"
+              >
+                Dark
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                @click="colorMode.preference = 'system'"
+                class="cursor-pointer"
+              >
+                System
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <DropdownMenu>
+            <DropdownMenuTrigger as-child>
+              <Button
+                variant="ghost"
+                class="w-[213px] flex items-center justify-start h-12 p-2"
+              >
+                <Avatar class="mr-[0.5rem] w-8 h-8">
+                  <AvatarImage :src="avatarUrl" alt="@radix-vue" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+                <div>
+                  {{ name }}
+                </div>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent :align="'start'" class="w-[213px]">
+              <DropdownMenuLabel class="h-10 leading-7">{{
+                email
+              }}</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem class="cursor-pointer h-10">
+                <AlertDialogTrigger>
+                  <Button variant="ghost" class="p-0">
+                    <Icon
+                      icon="mdi:file-table-outline"
+                      width="20px"
+                      height="20px"
+                      class="mr-2"
+                    />
+                    Customize ChatGPT
+                  </Button>
+                </AlertDialogTrigger>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                class="cursor-pointer h-10"
+                @click="handleLogout"
+              >
+                <Icon
+                  icon="ic:round-logout"
+                  width="20px"
+                  height="20px"
+                  class="mr-2"
+                />
+                Log out</DropdownMenuItem
+              >
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle class="">Customize ChatGPT</AlertDialogTitle>
+              <AlertDialogDescription>
+                <div class="">Custom Instructions</div>
+                <p class="">
+                  What would you like ChatGPT to know about you to provide
+                  better responses?
+                </p>
+                <Textarea class=""></Textarea>
+                <p class="">How would you like ChatGPT to respond?</p>
+                <Textarea class=""></Textarea>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction>Save</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   </div>
@@ -125,15 +166,14 @@
 
 <script setup lang="ts">
 import { useUserStore } from "@/stores/user";
-import { Icon } from "@iconify/vue";
 import { useChatRoomList } from "@/stores/chatRoomList";
-
+import { Icon } from "@iconify/vue";
 const colorMode = useColorMode();
 
 const chatRoomList = useChatRoomList();
 const { chatRoomData } = storeToRefs(chatRoomList);
 const userStroe = useUserStore();
-const { name, avatarUrl } = storeToRefs(userStroe);
+const { name, avatarUrl, email } = storeToRefs(userStroe);
 chatRoomList.getData();
 onMounted(() => {
   userStroe.getData();
@@ -141,6 +181,7 @@ onMounted(() => {
 
 const supabase = useSupabaseClient();
 const router = useRouter();
+
 const handleLogout = async () => {
   try {
     const { error } = await supabase.auth.signOut();
@@ -152,6 +193,7 @@ const handleLogout = async () => {
     console.log(error);
   }
 };
+
 const handleDelete = async (chat_id: string) => {
   try {
     const res = await $fetch("/api/chatRoomList", {
