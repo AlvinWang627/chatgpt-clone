@@ -64,7 +64,7 @@
         </div>
       </div>
     </div>
-    <div v-if="true" class="px-4 py-2 flex gap-3 max-w-[672px] mx-auto">
+    <div v-if="loading" class="px-4 py-2 flex gap-3 max-w-[672px] mx-auto">
       <div class="avatar shrink-0">
         <Icon name="charm:robot" :size="'25px'" />
       </div>
@@ -78,6 +78,12 @@
         />
       </div>
     </div>
+    <div
+      v-else
+      class="px-4 py-2 flex gap-3 max-w-[672px] mx-auto justify-center"
+    >
+      <div>something went wrong, please try again</div>
+    </div>
   </div>
 </template>
 
@@ -89,6 +95,7 @@ definePageMeta({
 useHead({
   title: "New chat",
 });
+const loading = ref(true);
 import { useUserStore } from "@/stores/user";
 import { useChatRoomList } from "@/stores/chatRoomList";
 const { $md } = useNuxtApp();
@@ -138,6 +145,8 @@ const submitHandler = async () => {
     promptInput.value = "";
   } catch (error) {
     console.log(error);
+  } finally {
+    loading.value = false;
   }
 };
 async function handleTitleFetch() {

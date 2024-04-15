@@ -49,6 +49,12 @@
             />
           </div>
         </div>
+        <div
+          v-if="erroring"
+          class="px-4 py-2 flex gap-3 max-w-[672px] mx-auto justify-center"
+        >
+          <div>something went wrong, please try again</div>
+        </div>
       </div>
     </ScrollArea>
     <form
@@ -91,6 +97,7 @@ const { avatarUrl } = storeToRefs(userStore);
 const route = useRoute();
 const chat_id = route.params.id || null;
 const loading = ref<boolean>(false);
+const erroring = ref<boolean>(false);
 const promptInput = ref("");
 const promptDesc = ref<PromptDesc[]>([]);
 const fromNewChat = ref<boolean>(true);
@@ -110,6 +117,7 @@ const getPromptHistory = async (isFirstPrompt = false) => {
       const { data } = res;
       promptDesc.value = data;
     } catch (error) {
+      erroring.value = true;
       console.log(error);
     }
   }
@@ -130,11 +138,12 @@ const submitHandler = async () => {
       method: "post",
       body: { messages: promptDesc.value, chat_id },
     });
-
     promptDesc.value.push(res);
-    loading.value = false;
   } catch (error) {
+    erroring.value = true;
     promptDesc.value.pop();
+  } finally {
+    loading.value = false;
   }
 };
 </script>
