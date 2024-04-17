@@ -42,7 +42,7 @@ import { Icon } from "@iconify/vue";
 definePageMeta({
   layout: "home",
 });
-const componentLoaded = ref(false);
+const componentLoaded = ref<boolean>(false);
 //get dark mode
 const darkMode = ref<string>("light");
 onMounted(() => {
@@ -54,7 +54,7 @@ onMounted(() => {
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { Auth } from "@nuxtbase/auth-ui-vue";
 const supabaseClient = useSupabaseClient();
-const authView = ref("sign_in");
+const authView = ref<string>("sign_in");
 
 const user = useSupabaseUser();
 const redirectTo = `${useRuntimeConfig().public.baseUrl}/confirm`;
@@ -76,12 +76,13 @@ const githubHandler = async () => {
 };
 const googleHandler = async () => {
   try {
-    const { error } = await supabaseClient.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo,
-      },
-    });
+    const { error }: { error: Error | null } =
+      await supabaseClient.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo,
+        },
+      });
     if (error) {
       throw new Error("fail");
     }

@@ -1,6 +1,6 @@
 <template>
-  <div class="flex flex-col w-full h-full">
-    <ScrollArea class="chat-area pt-6">
+  <div class="flex flex-col w-full sub-page">
+    <ScrollArea class="chat-area">
       <div class="pb-9">
         <div v-for="(item, index) in promptDesc" :key="index">
           <div
@@ -149,7 +149,10 @@ const submitHandler = async () => {
 </script>
 
 <style lang="scss" scoped>
+.sub-page {
+  height: calc(100dvh - 56px);
+}
 .chat-area {
-  height: calc(100dvh - 92px);
+  height: calc(100dvh - 112px - 56px);
 }
 </style>

@@ -1,12 +1,13 @@
 <template>
   <div
-    class="flex items-center justify-center flex-col w-full relative"
+    class="flex items-center justify-center flex-col w-full relative sub-page"
     v-if="promptDesc.length === 1"
   >
     <div class="flex items-center justify-center flex-col chat-area">
       <Icon name="charm:robot" :size="'48px'" class="mb-2" />
       <h1>How can I help you today?</h1>
     </div>
+
     <form
       @keydown.shift.enter=""
       @keyup.enter.exact="submitHandler"
@@ -163,7 +164,10 @@ async function handleTitleFetch() {
 </script>
 
 <style lang="scss" scoped>
+.sub-page {
+  height: calc(100dvh - 56px);
+}
 .chat-area {
-  height: calc(100dvh - 92px);
+  height: calc(100dvh - 112px);
 }
 </style>
