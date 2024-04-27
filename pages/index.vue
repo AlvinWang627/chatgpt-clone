@@ -7,7 +7,6 @@
       <Icon name="charm:robot" :size="'48px'" class="mb-2" />
       <h1>How can I help you today?</h1>
     </div>
-
     <form
       @keydown.shift.enter=""
       @keyup.enter.exact="submitHandler"
@@ -88,7 +87,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 definePageMeta({
   layout: "default",
   name: "index",
@@ -96,9 +95,9 @@ definePageMeta({
 useHead({
   title: "New chat",
 });
-const loading = ref(true);
 import { useUserStore } from "@/stores/user";
 import { useChatRoomList } from "@/stores/chatRoomList";
+const loading = ref(true);
 const { $md } = useNuxtApp();
 const chatRoomList = useChatRoomList();
 
@@ -107,13 +106,38 @@ const { avatarUrl } = storeToRefs(userStore);
 
 const promptInput = ref("");
 const title = ref("");
-const promptDesc = ref([
+type PromptDesc = {
+  role: string;
+  content: string;
+};
+const promptDesc = ref<PromptDesc[]>([
   { role: "system", content: "You are a helpful assistant." },
 ]);
+const getInstruction = async () => {
+  try {
+    const { yourself_prompt, response_prompt, enable } = await $fetch(
+      "/api/instruction",
+      {
+        method: "get",
+      }
+    );
+    if (enable) {
+      if (yourself_prompt || response_prompt) {
+        promptDesc.value[0].content = yourself_prompt + response_prompt;
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
 const router = useRouter();
 const submitHandler = async () => {
   if (promptInput.value.length === 0) return;
-  promptDesc.value.push({ role: "user", content: promptInput.value });
+  getInstruction();
+  promptDesc.value = [
+    ...promptDesc.value,
+    { role: "user", content: promptInput.value },
+  ];
   await handleTitleFetch();
   try {
     //insert chatroom get chat_id
@@ -138,7 +162,11 @@ const submitHandler = async () => {
       created_at,
       id,
     });
-    promptDesc.value.push(res);
+    // promptDesc.value = [...promptDesc.value, res];
+    promptDesc.value = [
+      ...promptDesc.value,
+      { role: res.role, content: res.content as string },
+    ];
 
     localStorage.setItem("firstPrompt", JSON.stringify(promptDesc.value));
     localStorage.setItem("isFirstPrompt", JSON.stringify(true));

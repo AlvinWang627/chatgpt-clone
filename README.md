@@ -9,8 +9,8 @@ https://alvinwang627.dev/
 主要目的是練習沒接觸過的技術，本專案目前尚在開發中
 
 ## 預期
-- [ ] Custom Instructions
-- [ ] gen picture
+- [V] Custom Instructions
+- [V] gen picture
 - [ ] gen audio
 - [ ] paywall
 - [ ] SMS customer service

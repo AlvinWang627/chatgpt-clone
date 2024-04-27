@@ -139,25 +139,7 @@
               >
             </DropdownMenuContent>
           </DropdownMenu>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle class="">Customize ChatGPT</AlertDialogTitle>
-              <AlertDialogDescription>
-                <div class="">Custom Instructions</div>
-                <p class="">
-                  What would you like ChatGPT to know about you to provide
-                  better responses?
-                </p>
-                <Textarea class=""></Textarea>
-                <p class="">How would you like ChatGPT to respond?</p>
-                <Textarea class=""></Textarea>
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction>Save</AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
+          <InstructionDialog />
         </AlertDialog>
       </div>
     </div>
