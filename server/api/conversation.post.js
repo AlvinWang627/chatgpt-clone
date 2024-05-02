@@ -1,7 +1,6 @@
 import OpenAI from "openai";
 import { defineEventHandler } from "h3";
-import { serverSupabaseClient } from "#supabase/server";
-
+import { serverSupabaseClient, serverSupabaseUser } from "#supabase/server";
 /**
  * backend
  * 建立
@@ -27,6 +26,8 @@ import { serverSupabaseClient } from "#supabase/server";
 
 export default defineEventHandler(async (event) => {
   const client = await serverSupabaseClient(event);
+  const user = await serverSupabaseUser(event);
+  const userId = user.id;
   const body = await readBody(event);
   const { chat_id, messages } = body;
   const config = useRuntimeConfig(event);
@@ -38,6 +39,9 @@ export default defineEventHandler(async (event) => {
     .from("ai_chat")
     .select("*")
     .eq("chat_id", chat_id);
+  const isLimited = await checkMessageIsLimitd(event, userId);
+  await addLimitTimes(event, userId);
+  console.log("checkMessageLimit", isLimited);
   async function promptToGPT() {
     const completion = await openai.chat.completions.create({
       messages,

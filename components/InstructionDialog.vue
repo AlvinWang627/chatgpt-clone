@@ -49,6 +49,9 @@ const promptData = ref<PromptData>({
   response_prompt: "",
   enable: true,
 });
+onMounted(() => {
+  getData();
+});
 const yourself_prompt_text = computed<number>(() => {
   return promptData.value.yourself_prompt.length || 0;
 });
@@ -69,7 +72,7 @@ const getData = async () => {
     console.log(error);
   }
 };
-getData();
+
 const handleSubmit = async () => {
   try {
     const { yourself_prompt, response_prompt, enable } = promptData.value;

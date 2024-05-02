@@ -12,7 +12,7 @@
       <Icon icon="jam:write" width="18px" height="18px" />
     </button>
     <div class="flex flex-col content-between">
-      <ScrollArea class="pb-3 scroll-area">
+      <ScrollArea :class="[{ 'pro-version': proVersion }, 'pb-3 scroll-area']">
         <TransitionGroup name="list" tag="ul" class="mt-[80px]">
           <li v-for="item in chatRoomData" :key="item.id" class="relative">
             <NuxtLink
@@ -55,48 +55,38 @@
           </li>
         </TransitionGroup>
       </ScrollArea>
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <button
+            class="mb-1 p-2 flex flex-col items-center justify-between w-[213px] rounded-lg bg-background hover:bg-button-foreground cursor-pointer active:scale-[0.98]"
+            v-if="!proVersion"
+          >
+            <div>{{ limitTimes >= 5 ? 5 : limitTimes }} / 5 free messages</div>
+            <Progress :model-value="limitTimes * 20" class="my-2" />
+            <div>Upgrade to Pro</div>
+          </button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Upgrade to chatGPT pro</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete your
+              account and remove your data from our servers.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>not now</AlertDialogCancel>
+            <AlertDialogAction>Upgrade</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <div class="flex flex-col">
         <AlertDialog>
           <DropdownMenu>
             <DropdownMenuTrigger as-child>
-              <Button variant="ghost" class="w-[213px]">
-                <Icon
-                  icon="radix-icons:moon"
-                  class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
-                />
-                <Icon
-                  icon="radix-icons:sun"
-                  class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
-                />
-                <span class="sr-only">Toggle theme</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem
-                @click="colorMode.preference = 'light'"
-                class="cursor-pointer"
-              >
-                Light
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                @click="colorMode.preference = 'dark'"
-                class="cursor-pointer"
-              >
-                Dark
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                @click="colorMode.preference = 'system'"
-                class="cursor-pointer"
-              >
-                System
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <DropdownMenu>
-            <DropdownMenuTrigger as-child>
               <Button
                 variant="ghost"
-                class="w-[213px] flex items-center justify-start h-12 p-2"
+                class="w-[213px] flex items-center justify-start h-12 p-2 bg-background hover:bg-button-foreground"
               >
                 <Avatar class="mr-[0.5rem] w-8 h-8">
                   <AvatarImage :src="avatarUrl" alt="@radix-vue" />
@@ -112,17 +102,52 @@
                 email
               }}</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem class="cursor-pointer h-10">
-                <AlertDialogTrigger>
-                  <Button variant="ghost" class="p-0">
+              <DropdownMenu>
+                <DropdownMenuTrigger as-child>
+                  <Button variant="ghost" class="w-[213px]">
                     <Icon
-                      icon="mdi:file-table-outline"
-                      width="20px"
-                      height="20px"
-                      class="mr-2"
+                      icon="radix-icons:moon"
+                      class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
                     />
-                    Customize ChatGPT
+                    <Icon
+                      icon="radix-icons:sun"
+                      class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
+                    />
+                    <span class="sr-only">Toggle theme</span>
                   </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem
+                    @click="colorMode.preference = 'light'"
+                    class="cursor-pointer"
+                  >
+                    Light
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    @click="colorMode.preference = 'dark'"
+                    class="cursor-pointer"
+                  >
+                    Dark
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    @click="colorMode.preference = 'system'"
+                    class="cursor-pointer"
+                  >
+                    System
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <DropdownMenuItem class="p-0">
+                <AlertDialogTrigger
+                  class="w-[203px] px-2 py-[6px] flex items-center active:bg-accent focus:g-accent h-10"
+                >
+                  <Icon
+                    icon="mdi:file-table-outline"
+                    width="20px"
+                    height="20px"
+                    class="mr-2"
+                  />
+                  Customize ChatGPT
                 </AlertDialogTrigger>
               </DropdownMenuItem>
               <DropdownMenuItem
@@ -155,10 +180,11 @@ const colorMode = useColorMode();
 const chatRoomList = useChatRoomList();
 const { chatRoomData } = storeToRefs(chatRoomList);
 const userStroe = useUserStore();
-const { name, avatarUrl, email } = storeToRefs(userStroe);
+const { name, avatarUrl, email, limitTimes } = storeToRefs(userStroe);
 chatRoomList.getData();
 onMounted(() => {
   userStroe.getData();
+  userStroe.getLimitTimes();
 });
 
 const supabase = useSupabaseClient();
@@ -195,6 +221,9 @@ const handleDelete = async (chat_id: string) => {
     console.log(error);
   }
 };
+
+const proVersion = ref(false);
+const submitTimesLimit = ref(0);
 </script>
 
 <style lang="scss" scoped>
@@ -202,7 +231,10 @@ const handleDelete = async (chat_id: string) => {
   @apply bg-button;
 }
 .scroll-area {
-  height: calc(100vh - 12px - 40px - 48px);
+  height: calc(100vh - 12px - 88px - 48px);
+}
+.scroll-area.pro-version {
+  height: calc(100vh - 12px - 48px);
 }
 .list-enter-active,
 .list-leave-active {

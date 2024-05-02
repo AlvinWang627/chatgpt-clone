@@ -168,6 +168,7 @@ const submitHandler = async () => {
       { role: res.role, content: res.content as string },
     ];
 
+    userStore.getLimitTimes();
     localStorage.setItem("firstPrompt", JSON.stringify(promptDesc.value));
     localStorage.setItem("isFirstPrompt", JSON.stringify(true));
     router.push(`/c/${chat_id}`);
