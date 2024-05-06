@@ -85,6 +85,22 @@
       <div>something went wrong, please try again</div>
     </div>
   </div>
+  <AlertDialog :open="alertDialogOpen">
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>Upgrade to chatGPT pro</AlertDialogTitle>
+        <AlertDialogDescription>
+          Upgrade to the professional version and you can ask unlimited times
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel @click="alertDialogOpen = false"
+          >not now</AlertDialogCancel
+        >
+        <AlertDialogAction @click="handleStripe">Upgrade</AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
 </template>
 
 <script setup lang="ts">
@@ -98,6 +114,7 @@ useHead({
 import { useUserStore } from "@/stores/user";
 import { useChatRoomList } from "@/stores/chatRoomList";
 const loading = ref(true);
+const alertDialogOpen = ref(false);
 const { $md } = useNuxtApp();
 const chatRoomList = useChatRoomList();
 
@@ -113,6 +130,7 @@ type PromptDesc = {
 const promptDesc = ref<PromptDesc[]>([
   { role: "system", content: "You are a helpful assistant." },
 ]);
+
 const getInstruction = async () => {
   try {
     const { yourself_prompt, response_prompt, enable } = await $fetch(
@@ -130,9 +148,21 @@ const getInstruction = async () => {
     console.log(error);
   }
 };
+
 const router = useRouter();
 const submitHandler = async () => {
   if (promptInput.value.length === 0) return;
+  //check subscribe and limit
+  const checkSubscribe = await $fetch("/api/stripe/checkSubscribe");
+  const limitTimes = await $fetch("/api/limitTimes", {
+    method: "get",
+  });
+  if (!checkSubscribe) {
+    if (limitTimes >= 5) {
+      return (alertDialogOpen.value = true);
+    }
+  }
+
   getInstruction();
   promptDesc.value = [
     ...promptDesc.value,
@@ -156,6 +186,10 @@ const submitHandler = async () => {
         chat_id,
       },
     });
+    if (!res) {
+      alertDialogOpen.value = true;
+      return false;
+    }
     chatRoomList.chatRoomData.unshift({
       chat_id,
       chat_name,
@@ -189,6 +223,12 @@ async function handleTitleFetch() {
   } catch (error) {
     console.log(error);
   }
+}
+async function handleStripe() {
+  const sessionURL = await $fetch("/api/stripe", {
+    method: "post",
+  });
+  window.location = sessionURL;
 }
 </script>
 

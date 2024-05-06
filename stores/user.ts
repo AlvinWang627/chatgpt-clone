@@ -25,8 +25,7 @@ export const useUserStore = defineStore("useUserStore", {
         const limitTimes = await $fetch("/api/limitTimes", {
           method: "get",
         });
-        this.limitTimes = limitTimes;
-        console.log(limitTimes);
+        this.limitTimes = limitTimes as number;
       } catch (error) {
         console.log(error);
       }

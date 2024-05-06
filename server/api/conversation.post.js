@@ -34,14 +34,21 @@ export default defineEventHandler(async (event) => {
   const openai = new OpenAI({
     apiKey: config.openaiApiKey,
   });
+  const isSubscribtion = await checkIsSubscriber(event, userId);
+  const isLimited = await checkMessageIsLimitd(event, userId);
+  if (!isSubscribtion && isLimited) {
+    //沒訂閱 到達限制次數
+    return false;
+  }
+
+  await addLimitTimes(event, userId);
+
   //get message by chat_id
   const { data } = await client
     .from("ai_chat")
     .select("*")
     .eq("chat_id", chat_id);
-  const isLimited = await checkMessageIsLimitd(event, userId);
-  await addLimitTimes(event, userId);
-  console.log("checkMessageLimit", isLimited);
+
   async function promptToGPT() {
     const completion = await openai.chat.completions.create({
       messages,

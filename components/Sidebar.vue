@@ -55,31 +55,7 @@
           </li>
         </TransitionGroup>
       </ScrollArea>
-      <AlertDialog>
-        <AlertDialogTrigger asChild>
-          <button
-            class="mb-1 p-2 flex flex-col items-center justify-between w-[213px] rounded-lg bg-background hover:bg-button-foreground cursor-pointer active:scale-[0.98]"
-            v-if="!proVersion"
-          >
-            <div>{{ limitTimes >= 5 ? 5 : limitTimes }} / 5 free messages</div>
-            <Progress :model-value="limitTimes * 20" class="my-2" />
-            <div>Upgrade to Pro</div>
-          </button>
-        </AlertDialogTrigger>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Upgrade to chatGPT pro</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete your
-              account and remove your data from our servers.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>not now</AlertDialogCancel>
-            <AlertDialogAction>Upgrade</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <PaywallDialog :pro-version="proVersion" />
       <div class="flex flex-col">
         <AlertDialog>
           <DropdownMenu>
@@ -180,11 +156,12 @@ const colorMode = useColorMode();
 const chatRoomList = useChatRoomList();
 const { chatRoomData } = storeToRefs(chatRoomList);
 const userStroe = useUserStore();
-const { name, avatarUrl, email, limitTimes } = storeToRefs(userStroe);
+const { name, avatarUrl, email } = storeToRefs(userStroe);
 chatRoomList.getData();
 onMounted(() => {
   userStroe.getData();
   userStroe.getLimitTimes();
+  checkSubscribe();
 });
 
 const supabase = useSupabaseClient();
@@ -221,9 +198,15 @@ const handleDelete = async (chat_id: string) => {
     console.log(error);
   }
 };
-
-const proVersion = ref(false);
-const submitTimesLimit = ref(0);
+const proVersion = ref(true);
+const checkSubscribe = async () => {
+  const isSubscribe = await $fetch("/api/stripe/checkSubscribe");
+  if (isSubscribe === true) {
+    proVersion.value = true;
+  } else {
+    proVersion.value = false;
+  }
+};
 </script>
 
 <style lang="scss" scoped>

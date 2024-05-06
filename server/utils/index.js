@@ -1,8 +1,14 @@
-import { serverSupabaseClient, serverSupabaseUser } from "#supabase/server";
+import { serverSupabaseClient } from "#supabase/server";
 /**
  * return  >= 5 true    <5 false
  */
 const maxTimes = 5;
+/**
+ * 檢查是否達到送出限制
+ * @param {*} event
+ * @param {*} userId
+ * @returns true代表達到送出上限
+ */
 export const checkMessageIsLimitd = async (event, userId) => {
   const client = await serverSupabaseClient(event);
   try {
@@ -26,7 +32,12 @@ export const checkMessageIsLimitd = async (event, userId) => {
     console.error(err);
   }
 };
-
+/**
+ * 送出次數加一次
+ * @param {*} event
+ * @param {string} userId
+ * @returns none
+ */
 export const addLimitTimes = async (event, userId) => {
   const client = await serverSupabaseClient(event);
   try {
@@ -65,6 +76,13 @@ export const addLimitTimes = async (event, userId) => {
     console.log(error);
   }
 };
+
+/**
+ * 拿到送出限制的次數
+ * @param {*} event
+ * @param {string} userId
+ * @returns 送出次數的number
+ */
 export const getLimitTimes = async (event, userId) => {
   const client = await serverSupabaseClient(event);
   try {
@@ -79,21 +97,35 @@ export const getLimitTimes = async (event, userId) => {
     }
   } catch (error) {}
 };
-
-export const checkIsSubscriber = () => {
-
-  // strip
-};
 /**
- * if (checkIsSubscriber) {
- *  訂閱者
- *  addLimitTimes()
- * } else if(checkMessageIsLimitd) {
- *  非訂閱者 達到送出最大上限
- *  return  false,submit times 到達最大上限,請訂閱
- * } else {
- *  非訂閱者 未達送出最大上限
- *  addLimitTimes()
- *  return true
- * }
+ * 檢查是否為subscriber
+ * @param {*} event h3 event
+ * @param {*} userId user id
+ * @returns 是subscriber且沒到期 return true
  */
+export const checkIsSubscriber = async (event, userId) => {
+  const client = await serverSupabaseClient(event);
+  try {
+    //確認user_subscribe中是否有目前的user
+    const { data: userExit } = await client
+      .from("user_subscribe")
+      .select("*")
+      .eq("user_id", userId);
+    if (!userExit.length) {
+      return false;
+    }
+    //確定user在user_subscribe中，確認是否到期
+    const { data: userSubScribeDate } = await client
+      .from("user_subscribe")
+      .select("expire_date");
+    if (new Date(userSubScribeDate[0].expire_date) > new Date()) {
+      //沒到期
+      return true;
+    } else {
+      //到期
+      return false;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};

@@ -1,7 +1,7 @@
 <template>
   <div class="flex bg-background-secondary w-screen h-screen">
     <Sidebar class="basis-[240px] pl-3 shrink-0 grow-0 bg-background pb-4" />
-    <div class="w-full">
+    <div class="w-full flex flex-col">
       <div class="h-14 flex items-center justify-start p-2">
         <DropdownMenu>
           <DropdownMenuTrigger class="text-lg font-medium px-3 py-2">{{
