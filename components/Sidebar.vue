@@ -155,12 +155,12 @@ const colorMode = useColorMode();
 
 const chatRoomList = useChatRoomList();
 const { chatRoomData } = storeToRefs(chatRoomList);
-const userStroe = useUserStore();
-const { name, avatarUrl, email } = storeToRefs(userStroe);
+const userStore = useUserStore();
+const { name, avatarUrl, email } = storeToRefs(userStore);
 chatRoomList.getData();
 onMounted(() => {
-  userStroe.getData();
-  userStroe.getLimitTimes();
+  userStore.getData();
+  userStore.getLimitTimes();
   checkSubscribe();
 });
 

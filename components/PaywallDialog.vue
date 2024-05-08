@@ -29,12 +29,12 @@
 </template>
 
 <script setup>
-const userStroe = useUserStore();
-const { limitTimes } = storeToRefs(userStroe);
+const userStore = useUserStore();
+const { limitTimes } = storeToRefs(userStore);
 const props = defineProps(["proVersion"]);
 
 onMounted(() => {
-  userStroe.getLimitTimes();
+  userStore.getLimitTimes();
 });
 
 async function handleStripe() {
