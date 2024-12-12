@@ -13,6 +13,4 @@ https://alvinwang627.dev/
 
 - [V] Custom Instructions
 - [V] gen picture
-- [ ] paywall
-- [ ] SMS customer service
-- [ ] gen audio
+- [V] paywall
